@@ -35,10 +35,14 @@ fn main() {
         ))
         .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_positioner::init())
-        .invoke_handler(tauri::generate_handler![list_audio_devices, start_audio, set_threshold])
+        .invoke_handler(tauri::generate_handler![
+            list_audio_devices,
+            start_audio,
+            set_threshold
+        ])
         .setup(|app| {
             // Hide dock icon, keep menu bar only
-            let _ = app.set_activation_policy(ActivationPolicy::Accessory);
+            app.set_activation_policy(ActivationPolicy::Accessory);
 
             let app_handle = app.handle();
             #[cfg(target_os = "macos")]
@@ -50,9 +54,7 @@ fn main() {
                     None,
                 );
             }
-            let show = MenuItemBuilder::new("Open Shush")
-                .id("show")
-                .build(app)?;
+            let show = MenuItemBuilder::new("Open Shush").id("show").build(app)?;
             let quit = MenuItemBuilder::new("Quit").id("quit").build(app)?;
             let tray_menu = MenuBuilder::new(app).items(&[&show, &quit]).build()?;
 
@@ -82,20 +84,18 @@ fn main() {
                         _ => {}
                     }
                 })
-                .on_menu_event(move |_app, event| {
-                    match event.id().as_ref() {
-                        "show" => {
-                            if let Some(window) = handle_for_menu.get_webview_window("main") {
-                                let _ = window.move_window(Position::TrayCenter);
-                                let _ = window.show();
-                                let _ = window.set_focus();
-                            }
+                .on_menu_event(move |_app, event| match event.id().as_ref() {
+                    "show" => {
+                        if let Some(window) = handle_for_menu.get_webview_window("main") {
+                            let _ = window.move_window(Position::TrayCenter);
+                            let _ = window.show();
+                            let _ = window.set_focus();
                         }
-                        "quit" => {
-                            handle_for_menu.exit(0);
-                        }
-                        _ => {}
                     }
+                    "quit" => {
+                        handle_for_menu.exit(0);
+                    }
+                    _ => {}
                 })
                 .build(app)?;
 
