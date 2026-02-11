@@ -2,6 +2,8 @@
 
 A Mac Menu bar app that monitors how loud you are being and gives you a warning when you are being too loud.
 
+<p align="center"> <img src="./screenshots/CleanShot 2026-02-11 at 15.16.54.png" alt="Shush Screenshot" width="400"/><p/>
+
 
 # Installation
 
