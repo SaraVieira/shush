@@ -36,6 +36,6 @@ jobs:
         with:
           tagName: ${{ github.ref_name }}
           releaseName: ${{ github.ref_name }}
-          releaseBody: "See the assets to download and install this version."
+          releaseBody: ""
           releaseDraft: false
           prerelease: false
