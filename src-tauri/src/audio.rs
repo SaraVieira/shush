@@ -151,9 +151,7 @@ pub fn start_monitoring(app_handle: AppHandle, device_name: Option<String>) {
         let device = if let Some(ref name) = device_name {
             host.input_devices()
                 .ok()
-                .and_then(|mut devices| {
-                    devices.find(|d| d.name().ok().as_deref() == Some(name))
-                })
+                .and_then(|mut devices| devices.find(|d| d.name().ok().as_deref() == Some(name)))
                 .or_else(|| host.default_input_device())
         } else {
             host.default_input_device()
@@ -170,8 +168,7 @@ pub fn start_monitoring(app_handle: AppHandle, device_name: Option<String>) {
         let config = match device.default_input_config() {
             Ok(c) => c,
             Err(e) => {
-                let _ =
-                    app_handle.emit("audio-error", format!("Config error: {}", e));
+                let _ = app_handle.emit("audio-error", format!("Config error: {}", e));
                 return;
             }
         };
@@ -200,8 +197,8 @@ pub fn start_monitoring(app_handle: AppHandle, device_name: Option<String>) {
                         let sum: f64 = data
                             .chunks(channels)
                             .map(|frame| {
-                                let mono = frame.iter().map(|&s| s as f64).sum::<f64>()
-                                    / channels as f64;
+                                let mono =
+                                    frame.iter().map(|&s| s as f64).sum::<f64>() / channels as f64;
                                 mono * mono
                             })
                             .sum();
@@ -237,8 +234,7 @@ pub fn start_monitoring(app_handle: AppHandle, device_name: Option<String>) {
                     {
                         let app = app_handle.clone();
                         move |err: cpal::StreamError| {
-                            let _ =
-                                app.emit("audio-error", format!("Stream error: {}", err));
+                            let _ = app.emit("audio-error", format!("Stream error: {}", err));
                         }
                     },
                     None,
@@ -253,15 +249,13 @@ pub fn start_monitoring(app_handle: AppHandle, device_name: Option<String>) {
         let stream = match stream {
             Ok(s) => s,
             Err(e) => {
-                let _ = app_handle
-                    .emit("audio-error", format!("Failed to build stream: {}", e));
+                let _ = app_handle.emit("audio-error", format!("Failed to build stream: {}", e));
                 return;
             }
         };
 
         if let Err(e) = stream.play() {
-            let _ =
-                app_handle.emit("audio-error", format!("Failed to play stream: {}", e));
+            let _ = app_handle.emit("audio-error", format!("Failed to play stream: {}", e));
             return;
         }
 
